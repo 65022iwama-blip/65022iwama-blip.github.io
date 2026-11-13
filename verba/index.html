@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VERBA — 今日の名言</title>
+<meta name="description" content="偉人の名言を毎日1つ表示するPWA。日付で変わります。">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0e14">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#0b0e14;--card:#141a26;--text:#e8eef2;--muted:#9aa8b5;--cyan:#7ac8d8;--magenta:#d98abf;--line:#243044}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:baseline}
+h1{font-size:22px;letter-spacing:.35em;margin:0}
+h1 span{color:var(--cyan)}
+.sub{color:var(--muted);font-size:12px}
+.date{margin:18px 0 8px;color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 22px}
+.tag{display:inline-block;font-size:12px;color:var(--cyan);border:1px solid var(--cyan);border-radius:999px;padding:3px 10px;margin-bottom:14px}
+.quote{font-size:24px;font-weight:700;line-height:1.7;margin:0 0 16px}
+.en{font-size:14px;color:var(--muted);line-height:1.7;margin:0 0 18px}
+.author{text-align:right;font-weight:700}
+.author small{display:block;color:var(--muted);font-weight:400}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+button{flex:1;min-width:90px;background:#1d2636;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 8px;font-size:14px;cursor:pointer}
+button.primary{background:var(--cyan);color:#06222a;border-color:var(--cyan);font-weight:700}
+button.fav-on{background:var(--magenta);border-color:var(--magenta);color:#2a0a22;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 10px}
+.chip{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.chip.on{color:#06222a;background:var(--cyan);border-color:var(--cyan);font-weight:700}
+.list{margin-top:8px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer}
+.item b{font-size:15px}
+.item p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.note{color:var(--muted);font-size:12px;margin-top:24px}
+.count{color:var(--muted);font-size:13px;margin:14px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>VERBA<span>.</span></h1><div class="sub">偉人の名言 / 毎日1つ</div></header>
+<p class="date" id="date"></p>
+<div class="card">
+<span class="tag" id="tag"></span>
+<p class="quote" id="quote"></p>
+<p class="en" id="en"></p>
+<p class="author" id="author"></p>
+<div class="row">
+<button id="prev">◀ 前の日</button>
+<button id="today" class="primary">今日</button>
+<button id="next">次の日 ▶</button>
+</div>
+<div class="row">
+<button id="random">ランダム</button>
+<button id="fav">☆ お気に入り</button>
+<button id="copy">コピー</button>
+</div>
+</div>
+<p class="count" id="count"></p>
+<div class="chips" id="chips"></div>
+<div class="list" id="list"></div>
+<p class="note">日付で名言が変わります（60件を順に表示）。お気に入りはこの端末だけに保存されます。日本語訳は意訳です。オフラインでも開けます。</p>
+</div>
+<script>
+const QUOTES=[
+{q:"ハングリーであれ、愚かであれ。",en:"Stay hungry, stay foolish.",a:"スティーブ・ジョブズ",c:"挑戦"},
+{q:"世界を変えられると思うほどクレイジーな人こそ、世界を変える。",en:"The people who are crazy enough to think they can change the world, are the ones who do.",a:"スティーブ・ジョブズ",c:"挑戦"},
+{q:"想像力は知識よりも大切だ。",en:"Imagination is more important than knowledge.",a:"アルベルト・アインシュタイン",c:"学び"},
+{q:"私は失敗していない。うまくいかない方法を1万通り見つけただけだ。",en:"I have not failed. I've just found 10,000 ways that won't work.",a:"トーマス・エジソン",c:"失敗"},
+{q:"天才とは、1%のひらめきと99%の努力である。",en:"Genius is one percent inspiration and ninety-nine percent perspiration.",a:"トーマス・エジソン",c:"努力"},
+{q:"成功は終わりではなく、失敗は致命的ではない。大切なのは続ける勇気だ。",en:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"ウィンストン・チャーチル",c:"勇気"},
+{q:"何者であれ、良い者であれ。",en:"Whatever you are, be a good one.",a:"エイブラハム・リンカーン",c:"努力"},
+{q:"あなたが見たいと思う変化に、あなた自身がなりなさい。",en:"Be the change that you wish to see in the world.",a:"マハトマ・ガンジー",c:"挑戦"},
+{q:"何事も、成し遂げるまでは不可能に思える。",en:"It always seems impossible until it's done.",a:"ネルソン・マンデラ",c:"勇気"},
+{q:"私たち皆が大きなことをできるわけではない。しかし、小さなことを大きな愛をもってできる。",en:"Not all of us can do great things. But we can do small things with great love.",a:"マザー・テレサ",c:"努力"},
+{q:"人生は大胆な冒険か、さもなくば何もない。",en:"Life is either a daring adventure or nothing at all.",a:"ヘレン・ケラー",c:"挑戦"},
+{q:"一人では少ししかできないが、共にすれば多くができる。",en:"Alone we can do so little; together we can do so much.",a:"ヘレン・ケラー",c:"学び"},
+{q:"夢はすべて叶う。追いかける勇気があれば。",en:"All our dreams can come true, if we have the courage to pursue them.",a:"ウォルト・ディズニー",c:"夢"},
+{q:"始める方法は、話すのをやめて行動することだ。",en:"The way to get started is to quit talking and begin doing.",a:"ウォルト・ディズニー",c:"努力"},
+{q:"できると思うか、できないと思うか。どちらも正しい。",en:"Whether you think you can or you think you can't – you're right.",a:"ヘンリー・フォード",c:"夢"},
+{q:"失敗は、もっと賢くやり直す機会にすぎない。",en:"Failure is simply the opportunity to begin again, this time more intelligently.",a:"ヘンリー・フォード",c:"失敗"},
+{q:"どれだけゆっくり進んでも、止まらなければ問題ない。",en:"It does not matter how slowly you go as long as you do not stop.",a:"孔子",c:"努力"},
+{q:"好きな仕事を選べば、一生働かずに済む。",en:"Choose a job you love, and you will never have to work a day in your life.",a:"孔子",c:"夢"},
+{q:"唯一の真の知恵は、自分が何も知らないと知ることだ。",en:"The only true wisdom is in knowing you know nothing.",a:"ソクラテス",c:"学び"},
+{q:"私たちは繰り返すことの集積だ。卓越とは行為ではなく習慣だ。",en:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"アリストテレス",c:"努力"},
+{q:"シンプルさこそ究極の洗練だ。",en:"Simplicity is the ultimate sophistication.",a:"レオナルド・ダ・ヴィンチ",c:"学び"},
+{q:"学ぶことは心を疲れさせない。",en:"Learning never exhausts the mind.",a:"レオナルド・ダ・ヴィンチ",c:"学び"},
+{q:"私が遠くを見られたのは、巨人の肩に立っていたからだ。",en:"If I have seen further it is by standing on the shoulders of Giants.",a:"アイザック・ニュートン",c:"学び"},
+{q:"人生で恐れるものは何もない。理解すべきものがあるだけだ。",en:"Nothing in life is to be feared, it is only to be understood.",a:"マリー・キュリー",c:"勇気"},
+{q:"生き残るのは最も強い者でも賢い者でもなく、変化に最も適応できる者だ。",en:"It is not the strongest of the species that survives, nor the most intelligent, but the one most responsive to change.",a:"チャールズ・ダーウィン",c:"挑戦"},
+{q:"物事に良いも悪いもない。考え方がそうさせるだけだ。",en:"There is nothing either good or bad, but thinking makes it so.",a:"ウィリアム・シェイクスピア",c:"学び"},
+{q:"できること、夢見ることは何でも始めよ。大胆さには天才と力と魔法がある。",en:"Whatever you can do or dream you can, begin it. Boldness has genius, power and magic in it.",a:"ヨハン・ヴォルフガング・フォン・ゲーテ",c:"挑戦"},
+{q:"なぜ生きるかを知る者は、ほとんどいかなる「いかに」にも耐えられる。",en:"He who has a why to live can bear almost any how.",a:"フリードリヒ・ニーチェ",c:"勇気"},
+{q:"私たちを殺さないものは、私たちを強くする。",en:"That which does not kill us makes us stronger.",a:"フリードリヒ・ニーチェ",c:"勇気"},
+{q:"難しいから挑まないのではない。挑まないから難しいのだ。",en:"It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",a:"セネカ",c:"挑戦"},
+{q:"運とは、準備が機会に出会ったときに起きることだ。",en:"Luck is what happens when preparation meets opportunity.",a:"セネカ",c:"努力"},
+{q:"心をコントロールできるのは自分だ。外の出来事ではない。それを知れば力が湧く。",en:"You have power over your mind – not outside events. Realize this, and you will find strength.",a:"マルクス・アウレリウス",c:"勇気"},
+{q:"起きたことではなく、どう反応するかが大切だ。",en:"It's not what happens to you, but how you react to it that matters.",a:"エピクテトス",c:"勇気"},
+{q:"始まりは仕事の中で最も大切な部分だ。",en:"The beginning is the most important part of the work.",a:"プラトン",c:"努力"},
+{q:"知識への投資は、最も良い利息を生む。",en:"An investment in knowledge pays the best interest.",a:"ベンジャミン・フランクリン",c:"学び"},
+{q:"読む価値のあるものを書くか、書く価値のあることをするか。",en:"Either write something worth reading or do something worth writing.",a:"ベンジャミン・フランクリン",c:"挑戦"},
+{q:"先に進む秘訣は、始めることだ。",en:"The secret of getting ahead is getting started.",a:"マーク・トウェイン",c:"努力"},
+{q:"20年後、やったことより、やらなかったことに後悔する。",en:"Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do.",a:"マーク・トウェイン",c:"夢"},
+{q:"自分らしくあれ。他の誰かはすでにいる。",en:"Be yourself; everyone else is already taken.",a:"オスカー・ワイルド",c:"勇気"},
+{q:"最も勇気ある行為は、自分で考えること。声に出して。",en:"The most courageous act is still to think for yourself. Aloud.",a:"ココ・シャネル",c:"勇気"},
+{q:"不可能はない。その言葉自体が「私は可能」と言っている。",en:"Nothing is impossible, the word itself says 'I'm possible'!",a:"オードリー・ヘプバーン",c:"夢"},
+{q:"トレーニングの毎分が嫌だった。でも「やめるな。今苦しめば、残りの人生を王者として生きられる」と言い聞かせた。",en:"I hated every minute of training, but I said, 'Don't quit. Suffer now and live the rest of your life as a champion.'",a:"モハメド・アリ",c:"努力"},
+{q:"私は9000本以上のシュートを外し、300試合近く負け、決勝シュートを26回外した。何度も失敗した。だからこそ成功した。",en:"I've missed more than 9000 shots in my career. I've lost almost 300 games. 26 times, I've been trusted to take the game winning shot and missed. I've failed over and over and over again in my life. And that is why I succeed.",a:"マイケル・ジョーダン",c:"失敗"},
+{q:"失敗は受け入れられる。誰でも失敗する。でも、挑戦しないことは受け入れられない。",en:"I can accept failure, everyone fails at something. But I can't accept not trying.",a:"マイケル・ジョーダン",c:"挑戦"},
+{q:"1万種類の蹴りを1回ずつ練習した男は恐れない。1つの蹴りを1万回練習した男を恐れる。",en:"I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",a:"ブルース・リー",c:"努力"},
+{q:"水になれ、友よ。",en:"Be water, my friend.",a:"ブルース・リー",c:"挑戦"},
+{q:"最も不満な顧客こそ、最大の学びの源だ。",en:"Your most unhappy customers are your greatest source of learning.",a:"ビル・ゲイツ",c:"学び"},
+{q:"最高の投資は、自分への投資だ。",en:"The best investment you can make is in yourself.",a:"ウォーレン・バフェット",c:"努力"},
+{q:"最大の冒険は、夢の人生を生きることだ。",en:"The biggest adventure you can take is to live the life of your dreams.",a:"オプラ・ウィンフリー",c:"夢"},
+{q:"何かで失敗せずに生きることはできない。失敗を避けて生きるなら、生きていないのと同じだ。",en:"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all.",a:"J.K.ローリング",c:"失敗"},
+{q:"人生がいかに困難に見えても、必ずできること、成功できることがある。",en:"However difficult life may seem, there is always something you can do and succeed at.",a:"スティーヴン・ホーキング",c:"勇気"},
+{q:"一人の子ども、一人の教師、一冊の本、一本のペンが世界を変えられる。",en:"One child, one teacher, one book, one pen can change the world.",a:"マララ・ユスフザイ",c:"挑戦"},
+{q:"世界を良くし始めるのに、誰も一瞬たりとも待つ必要がないなんて、なんと素晴らしいことだろう。",en:"How wonderful it is that nobody need wait a single moment before starting to improve the world.",a:"アンネ・フランク",c:"挑戦"},
+{q:"最も暗い夜も終わり、太陽は昇る。",en:"Even the darkest night will end and the sun will rise.",a:"ヴィクトル・ユゴー",c:"勇気"},
+{q:"計画のない目標は、ただの願いだ。",en:"A goal without a plan is just a wish.",a:"アントワーヌ・ド・サン＝テグジュペリ",c:"夢"},
+{q:"完璧とは、付け加えるものがなくなったときではなく、取り除くものがなくなったときに達成される。",en:"Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.",a:"アントワーヌ・ド・サン＝テグジュペリ",c:"学び"},
+{q:"すべての子どもは芸術家だ。問題は、大人になっても芸術家でいられるかどうかだ。",en:"Every child is an artist. The problem is how to remain an artist once we grow up.",a:"パブロ・ピカソ",c:"夢"},
+{q:"行動は、すべての成功の基礎となる鍵だ。",en:"Action is the foundational key to all success.",a:"パブロ・ピカソ",c:"努力"},
+{q:"気に入らないことがあれば変えなさい。変えられないなら、自分の態度を変えなさい。",en:"If you don't like something, change it. If you can't change it, change your attitude.",a:"マヤ・アンジェロウ",c:"勇気"},
+{q:"私たちの人生の目的は、幸せになることだ。",en:"The purpose of our lives is to be happy.",a:"ダライ・ラマ",c:"夢"}
+];
+let currentDate=new Date();
+let filter="すべて";
+function dayIndex(d){const start=new Date(d.getFullYear(),0,0);const diff=d-start;const day=Math.floor(diff/86400000);return (day-1)%QUOTES.length;}
+function favs(){try{return JSON.parse(localStorage.getItem("verba.favs")||"[]")}catch(e){return[]}}
+function show(d){
+  currentDate=d;
+  const idx=dayIndex(d);
+  const item=QUOTES[idx];
+  const wd=["日","月","火","水","木","金","土"][d.getDay()];
+  document.getElementById("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日（"+wd+"）・ "+(idx+1)+" / "+QUOTES.length+"件目";
+  document.getElementById("tag").textContent=item.c;
+  document.getElementById("quote").textContent="「"+item.q+"」";
+  document.getElementById("en").textContent=item.en;
+  document.getElementById("author").innerHTML=item.a+"<small>"+item.c+"</small>";
+  document.getElementById("count").textContent="全"+QUOTES.length+"件 ・ お気に入り "+favs().length+"件";
+  const f=favs().includes(idx);
+  const b=document.getElementById("fav");
+  b.textContent=f?"★ お気に入り済み":"☆ お気に入り";
+  b.classList.toggle("fav-on",f);
+  renderList();
+}
+function renderList(){
+  const cats=["すべて","お気に入り","挑戦","努力","失敗","時間","夢","勇気","学び","成功"];
+  // 時間・成功は現在0件のため表示から外す場合は下で調整
+  const chips=document.getElementById("chips");chips.innerHTML="";
+  ["すべて","お気に入り","挑戦","努力","失敗","夢","勇気","学び"].forEach(function(c){
+    const el=document.createElement("button");el.className="chip"+(filter===c?" on":"");el.textContent=c;
+    el.onclick=function(){filter=c;renderList()};chips.appendChild(el);
+  });
+  const list=document.getElementById("list");list.innerHTML="";
+  QUOTES.forEach(function(item,i){
+    if(filter==="お気に入り"&&!favs().includes(i))return;
+    if(filter!=="すべて"&&filter!=="お気に入り"&&item.c!==filter)return;
+    const div=document.createElement("div");div.className="item";
+    div.innerHTML="<b>「"+item.q+"」</b><p>"+item.a+" ・ "+item.c+(favs().includes(i)?" ・ ★":"")+"</p>";
+    div.onclick=function(){const d=new Date();const base=new Date(d.getFullYear(),0,1);base.setDate(base.getDate()+i);show(base)};
+    list.appendChild(div);
+  });
+}
+document.getElementById("prev").onclick=function(){const d=new Date(currentDate);d.setDate(d.getDate()-1);show(d)};
+document.getElementById("next").onclick=function(){const d=new Date(currentDate);d.setDate(d.getDate()+1);show(d)};
+document.getElementById("today").onclick=function(){show(new Date())};
+document.getElementById("random").onclick=function(){const d=new Date();d.setDate(d.getDate()+Math.floor(Math.random()*QUOTES.length));show(d)};
+document.getElementById("fav").onclick=function(){const idx=dayIndex(currentDate);let f=favs();if(f.includes(idx)){f=f.filter(function(x){return x!==idx})}else{f.push(idx)}localStorage.setItem("verba.favs",JSON.stringify(f));show(currentDate)};
+document.getElementById("copy").onclick=function(){const idx=dayIndex(currentDate);const item=QUOTES[idx];const t="「"+item.q+"」 — "+item.a;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert("コピーしました")})}else{alert(t)}};
+show(new Date());
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
+</script>
+</body>
+</html>
