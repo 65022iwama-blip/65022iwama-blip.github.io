@@ -4,47 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>VERBA — 今日の名言</title>
-<meta name="description" content="偉人の名言を毎日1つ表示するPWA。日付で変わります。">
+<meta name="description" content="偉人の名言を毎日1つ表示するPWA。今日の名言と、その人の顔写真。">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b0e14">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--bg:#0b0e14;--card:#141a26;--text:#e8eef2;--muted:#9aa8b5;--cyan:#7ac8d8;--magenta:#d98abf;--line:#243044}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;line-height:1.6}
-.wrap{max-width:680px;margin:0 auto;padding:20px 16px 40px}
-header{display:flex;justify-content:space-between;align-items:baseline}
-h1{font-size:22px;letter-spacing:.35em;margin:0}
-h1 span{color:var(--cyan)}
-.sub{color:var(--muted);font-size:12px}
-.date{margin:18px 0 8px;color:var(--muted);font-size:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 22px}
-.tag{display:inline-block;font-size:12px;color:var(--cyan);border:1px solid var(--cyan);border-radius:999px;padding:3px 10px;margin-bottom:14px}
-.quote{font-size:24px;font-weight:700;line-height:1.7;margin:0 0 16px}
-.en{font-size:14px;color:var(--muted);line-height:1.7;margin:0 0 18px}
-.author{text-align:right;font-weight:700}
-.author small{display:block;color:var(--muted);font-weight:400}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-button{flex:1;min-width:90px;background:#1d2636;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 8px;font-size:14px;cursor:pointer}
-button.primary{background:var(--cyan);color:#06222a;border-color:var(--cyan);font-weight:700}
-button.fav-on{background:var(--magenta);border-color:var(--magenta);color:#2a0a22;font-weight:700}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 10px}
-.chip{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
-.chip.on{color:#06222a;background:var(--cyan);border-color:var(--cyan);font-weight:700}
-.list{margin-top:8px}
-.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer}
-.item b{font-size:15px}
-.item p{margin:6px 0 0;color:var(--muted);font-size:13px}
-.note{color:var(--muted);font-size:12px;margin-top:24px}
-.count{color:var(--muted);font-size:13px;margin:14px 0 0}
+html,body{margin:0;padding:0;background:#0b0e14;color:#e8eef2;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif}
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
+.photo{position:absolute;inset:0;background:#141a26}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:center 18%;display:block;filter:saturate(.92) contrast(1.06)}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,14,20,.62) 0%,rgba(11,14,20,.08) 32%,rgba(11,14,20,.28) 55%,rgba(11,14,20,.88) 78%,#0b0e14 100%)}
+.top{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:18px 18px 0}
+.logo{font-size:20px;letter-spacing:.35em;font-weight:800;margin:0}
+.logo span{color:#7ac8d8}
+.datepill{font-size:12px;color:#e8eef2;background:rgba(11,14,20,.55);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px)}
+.main{position:relative;z-index:2;margin-top:auto;padding:0 20px 18px}
+.tag{display:inline-block;font-size:12px;color:#7ac8d8;border:1px solid #7ac8d8;border-radius:999px;padding:4px 12px;margin-bottom:12px;background:rgba(11,14,20,.55)}
+.quote{font-size:clamp(28px,7.5vw,42px);font-weight:800;line-height:1.55;margin:0 0 14px;text-shadow:0 2px 18px rgba(0,0,0,.7)}
+.en{font-size:14px;line-height:1.7;color:#c7d2dc;margin:0 0 14px;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+.author{font-size:20px;font-weight:800;margin:0}
+.author small{display:block;font-size:13px;color:#9aa8b5;font-weight:400;letter-spacing:.08em;margin-top:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+button{flex:1;min-width:84px;background:rgba(11,14,20,.62);color:#e8eef2;border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:11px 6px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px)}
+button.primary{background:#7ac8d8;color:#06222a;border-color:#7ac8d8;font-weight:700}
+button.fav-on{background:#d98abf;border-color:#d98abf;color:#2a0a22;font-weight:700}
+.credit{font-size:11px;color:#8b98a5;margin-top:12px}
+.panel{background:#0b0e14;padding:20px 16px 40px}
+.panel h2{font-size:15px;margin:0 0 10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.chip{background:transparent;color:#9aa8b5;border:1px solid #243044;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.chip.on{color:#06222a;background:#7ac8d8;border-color:#7ac8d8;font-weight:700}
+.item{display:flex;gap:12px;background:#141a26;border:1px solid #243044;border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;align-items:center}
+.item img{width:52px;height:52px;object-fit:cover;border-radius:10px;flex:none}
+.item b{font-size:14px;line-height:1.5}
+.item p{margin:4px 0 0;color:#9aa8b5;font-size:12px}
+.count{color:#9aa8b5;font-size:13px;margin:14px 0 0}
+.note{color:#9aa8b5;font-size:12px;margin-top:20px;line-height:1.7}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header><h1>VERBA<span>.</span></h1><div class="sub">偉人の名言 / 毎日1つ</div></header>
-<p class="date" id="date"></p>
-<div class="card">
+<section class="hero">
+<div class="photo"><img id="photo" alt=""></div>
+<div class="top"><p class="logo">VERBA<span>.</span></p><span class="datepill" id="date"></span></div>
+<div class="main">
 <span class="tag" id="tag"></span>
 <p class="quote" id="quote"></p>
 <p class="en" id="en"></p>
@@ -58,75 +63,80 @@ button.fav-on{background:var(--magenta);border-color:var(--magenta);color:#2a0a2
 <button id="random">ランダム</button>
 <button id="fav">☆ お気に入り</button>
 <button id="copy">コピー</button>
+<button id="toggleList">一覧</button>
 </div>
+<p class="credit">写真：Wikimedia Commons / Wikipedia ・ 日本語訳は意訳です</p>
 </div>
-<p class="count" id="count"></p>
+</section>
+<section class="panel hidden" id="panel">
+<h2>名言一覧</h2>
 <div class="chips" id="chips"></div>
-<div class="list" id="list"></div>
-<p class="note">日付で名言が変わります（60件を順に表示）。お気に入りはこの端末だけに保存されます。日本語訳は意訳です。オフラインでも開けます。</p>
-</div>
+<div id="list"></div>
+<p class="count" id="count"></p>
+<p class="note">開いたときは今日の名言だけが出ます。日付で名言が変わります（60件を順に表示）。お気に入りはこの端末だけに保存されます。オフラインでも文字は開けます。写真はオンラインで表示されます。</p>
+</section>
 <script>
 const QUOTES=[
-{q:"ハングリーであれ、愚かであれ。",en:"Stay hungry, stay foolish.",a:"スティーブ・ジョブズ",c:"挑戦"},
-{q:"世界を変えられると思うほどクレイジーな人こそ、世界を変える。",en:"The people who are crazy enough to think they can change the world, are the ones who do.",a:"スティーブ・ジョブズ",c:"挑戦"},
-{q:"想像力は知識よりも大切だ。",en:"Imagination is more important than knowledge.",a:"アルベルト・アインシュタイン",c:"学び"},
-{q:"私は失敗していない。うまくいかない方法を1万通り見つけただけだ。",en:"I have not failed. I've just found 10,000 ways that won't work.",a:"トーマス・エジソン",c:"失敗"},
-{q:"天才とは、1%のひらめきと99%の努力である。",en:"Genius is one percent inspiration and ninety-nine percent perspiration.",a:"トーマス・エジソン",c:"努力"},
-{q:"成功は終わりではなく、失敗は致命的ではない。大切なのは続ける勇気だ。",en:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"ウィンストン・チャーチル",c:"勇気"},
-{q:"何者であれ、良い者であれ。",en:"Whatever you are, be a good one.",a:"エイブラハム・リンカーン",c:"努力"},
-{q:"あなたが見たいと思う変化に、あなた自身がなりなさい。",en:"Be the change that you wish to see in the world.",a:"マハトマ・ガンジー",c:"挑戦"},
-{q:"何事も、成し遂げるまでは不可能に思える。",en:"It always seems impossible until it's done.",a:"ネルソン・マンデラ",c:"勇気"},
-{q:"私たち皆が大きなことをできるわけではない。しかし、小さなことを大きな愛をもってできる。",en:"Not all of us can do great things. But we can do small things with great love.",a:"マザー・テレサ",c:"努力"},
-{q:"人生は大胆な冒険か、さもなくば何もない。",en:"Life is either a daring adventure or nothing at all.",a:"ヘレン・ケラー",c:"挑戦"},
-{q:"一人では少ししかできないが、共にすれば多くができる。",en:"Alone we can do so little; together we can do so much.",a:"ヘレン・ケラー",c:"学び"},
-{q:"夢はすべて叶う。追いかける勇気があれば。",en:"All our dreams can come true, if we have the courage to pursue them.",a:"ウォルト・ディズニー",c:"夢"},
-{q:"始める方法は、話すのをやめて行動することだ。",en:"The way to get started is to quit talking and begin doing.",a:"ウォルト・ディズニー",c:"努力"},
-{q:"できると思うか、できないと思うか。どちらも正しい。",en:"Whether you think you can or you think you can't – you're right.",a:"ヘンリー・フォード",c:"夢"},
-{q:"失敗は、もっと賢くやり直す機会にすぎない。",en:"Failure is simply the opportunity to begin again, this time more intelligently.",a:"ヘンリー・フォード",c:"失敗"},
-{q:"どれだけゆっくり進んでも、止まらなければ問題ない。",en:"It does not matter how slowly you go as long as you do not stop.",a:"孔子",c:"努力"},
-{q:"好きな仕事を選べば、一生働かずに済む。",en:"Choose a job you love, and you will never have to work a day in your life.",a:"孔子",c:"夢"},
-{q:"唯一の真の知恵は、自分が何も知らないと知ることだ。",en:"The only true wisdom is in knowing you know nothing.",a:"ソクラテス",c:"学び"},
-{q:"私たちは繰り返すことの集積だ。卓越とは行為ではなく習慣だ。",en:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"アリストテレス",c:"努力"},
-{q:"シンプルさこそ究極の洗練だ。",en:"Simplicity is the ultimate sophistication.",a:"レオナルド・ダ・ヴィンチ",c:"学び"},
-{q:"学ぶことは心を疲れさせない。",en:"Learning never exhausts the mind.",a:"レオナルド・ダ・ヴィンチ",c:"学び"},
-{q:"私が遠くを見られたのは、巨人の肩に立っていたからだ。",en:"If I have seen further it is by standing on the shoulders of Giants.",a:"アイザック・ニュートン",c:"学び"},
-{q:"人生で恐れるものは何もない。理解すべきものがあるだけだ。",en:"Nothing in life is to be feared, it is only to be understood.",a:"マリー・キュリー",c:"勇気"},
-{q:"生き残るのは最も強い者でも賢い者でもなく、変化に最も適応できる者だ。",en:"It is not the strongest of the species that survives, nor the most intelligent, but the one most responsive to change.",a:"チャールズ・ダーウィン",c:"挑戦"},
-{q:"物事に良いも悪いもない。考え方がそうさせるだけだ。",en:"There is nothing either good or bad, but thinking makes it so.",a:"ウィリアム・シェイクスピア",c:"学び"},
-{q:"できること、夢見ることは何でも始めよ。大胆さには天才と力と魔法がある。",en:"Whatever you can do or dream you can, begin it. Boldness has genius, power and magic in it.",a:"ヨハン・ヴォルフガング・フォン・ゲーテ",c:"挑戦"},
-{q:"なぜ生きるかを知る者は、ほとんどいかなる「いかに」にも耐えられる。",en:"He who has a why to live can bear almost any how.",a:"フリードリヒ・ニーチェ",c:"勇気"},
-{q:"私たちを殺さないものは、私たちを強くする。",en:"That which does not kill us makes us stronger.",a:"フリードリヒ・ニーチェ",c:"勇気"},
-{q:"難しいから挑まないのではない。挑まないから難しいのだ。",en:"It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",a:"セネカ",c:"挑戦"},
-{q:"運とは、準備が機会に出会ったときに起きることだ。",en:"Luck is what happens when preparation meets opportunity.",a:"セネカ",c:"努力"},
-{q:"心をコントロールできるのは自分だ。外の出来事ではない。それを知れば力が湧く。",en:"You have power over your mind – not outside events. Realize this, and you will find strength.",a:"マルクス・アウレリウス",c:"勇気"},
-{q:"起きたことではなく、どう反応するかが大切だ。",en:"It's not what happens to you, but how you react to it that matters.",a:"エピクテトス",c:"勇気"},
-{q:"始まりは仕事の中で最も大切な部分だ。",en:"The beginning is the most important part of the work.",a:"プラトン",c:"努力"},
-{q:"知識への投資は、最も良い利息を生む。",en:"An investment in knowledge pays the best interest.",a:"ベンジャミン・フランクリン",c:"学び"},
-{q:"読む価値のあるものを書くか、書く価値のあることをするか。",en:"Either write something worth reading or do something worth writing.",a:"ベンジャミン・フランクリン",c:"挑戦"},
-{q:"先に進む秘訣は、始めることだ。",en:"The secret of getting ahead is getting started.",a:"マーク・トウェイン",c:"努力"},
-{q:"20年後、やったことより、やらなかったことに後悔する。",en:"Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do.",a:"マーク・トウェイン",c:"夢"},
-{q:"自分らしくあれ。他の誰かはすでにいる。",en:"Be yourself; everyone else is already taken.",a:"オスカー・ワイルド",c:"勇気"},
-{q:"最も勇気ある行為は、自分で考えること。声に出して。",en:"The most courageous act is still to think for yourself. Aloud.",a:"ココ・シャネル",c:"勇気"},
-{q:"不可能はない。その言葉自体が「私は可能」と言っている。",en:"Nothing is impossible, the word itself says 'I'm possible'!",a:"オードリー・ヘプバーン",c:"夢"},
-{q:"トレーニングの毎分が嫌だった。でも「やめるな。今苦しめば、残りの人生を王者として生きられる」と言い聞かせた。",en:"I hated every minute of training, but I said, 'Don't quit. Suffer now and live the rest of your life as a champion.'",a:"モハメド・アリ",c:"努力"},
-{q:"私は9000本以上のシュートを外し、300試合近く負け、決勝シュートを26回外した。何度も失敗した。だからこそ成功した。",en:"I've missed more than 9000 shots in my career. I've lost almost 300 games. 26 times, I've been trusted to take the game winning shot and missed. I've failed over and over and over again in my life. And that is why I succeed.",a:"マイケル・ジョーダン",c:"失敗"},
-{q:"失敗は受け入れられる。誰でも失敗する。でも、挑戦しないことは受け入れられない。",en:"I can accept failure, everyone fails at something. But I can't accept not trying.",a:"マイケル・ジョーダン",c:"挑戦"},
-{q:"1万種類の蹴りを1回ずつ練習した男は恐れない。1つの蹴りを1万回練習した男を恐れる。",en:"I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",a:"ブルース・リー",c:"努力"},
-{q:"水になれ、友よ。",en:"Be water, my friend.",a:"ブルース・リー",c:"挑戦"},
-{q:"最も不満な顧客こそ、最大の学びの源だ。",en:"Your most unhappy customers are your greatest source of learning.",a:"ビル・ゲイツ",c:"学び"},
-{q:"最高の投資は、自分への投資だ。",en:"The best investment you can make is in yourself.",a:"ウォーレン・バフェット",c:"努力"},
-{q:"最大の冒険は、夢の人生を生きることだ。",en:"The biggest adventure you can take is to live the life of your dreams.",a:"オプラ・ウィンフリー",c:"夢"},
-{q:"何かで失敗せずに生きることはできない。失敗を避けて生きるなら、生きていないのと同じだ。",en:"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all.",a:"J.K.ローリング",c:"失敗"},
-{q:"人生がいかに困難に見えても、必ずできること、成功できることがある。",en:"However difficult life may seem, there is always something you can do and succeed at.",a:"スティーヴン・ホーキング",c:"勇気"},
-{q:"一人の子ども、一人の教師、一冊の本、一本のペンが世界を変えられる。",en:"One child, one teacher, one book, one pen can change the world.",a:"マララ・ユスフザイ",c:"挑戦"},
-{q:"世界を良くし始めるのに、誰も一瞬たりとも待つ必要がないなんて、なんと素晴らしいことだろう。",en:"How wonderful it is that nobody need wait a single moment before starting to improve the world.",a:"アンネ・フランク",c:"挑戦"},
-{q:"最も暗い夜も終わり、太陽は昇る。",en:"Even the darkest night will end and the sun will rise.",a:"ヴィクトル・ユゴー",c:"勇気"},
-{q:"計画のない目標は、ただの願いだ。",en:"A goal without a plan is just a wish.",a:"アントワーヌ・ド・サン＝テグジュペリ",c:"夢"},
-{q:"完璧とは、付け加えるものがなくなったときではなく、取り除くものがなくなったときに達成される。",en:"Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.",a:"アントワーヌ・ド・サン＝テグジュペリ",c:"学び"},
-{q:"すべての子どもは芸術家だ。問題は、大人になっても芸術家でいられるかどうかだ。",en:"Every child is an artist. The problem is how to remain an artist once we grow up.",a:"パブロ・ピカソ",c:"夢"},
-{q:"行動は、すべての成功の基礎となる鍵だ。",en:"Action is the foundational key to all success.",a:"パブロ・ピカソ",c:"努力"},
-{q:"気に入らないことがあれば変えなさい。変えられないなら、自分の態度を変えなさい。",en:"If you don't like something, change it. If you can't change it, change your attitude.",a:"マヤ・アンジェロウ",c:"勇気"},
-{q:"私たちの人生の目的は、幸せになることだ。",en:"The purpose of our lives is to be happy.",a:"ダライ・ラマ",c:"夢"}
+{q:"ハングリーであれ、愚かであれ。",en:"Stay hungry, stay foolish.",a:"スティーブ・ジョブズ",e:"Steve Jobs",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Steve_Jobs_Headshot_2010_%28cropped_6%29.jpg/960px-Steve_Jobs_Headshot_2010_%28cropped_6%29.jpg"},
+{q:"世界を変えられると思うほどクレイジーな人こそ、世界を変える。",en:"The people who are crazy enough to think they can change the world, are the ones who do.",a:"スティーブ・ジョブズ",e:"Steve Jobs",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Steve_Jobs_Headshot_2010_%28cropped_6%29.jpg/960px-Steve_Jobs_Headshot_2010_%28cropped_6%29.jpg"},
+{q:"想像力は知識よりも大切だ。",en:"Imagination is more important than knowledge.",a:"アルベルト・アインシュタイン",e:"Albert Einstein",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Albert_Einstein_Head_cleaned.jpg/960px-Albert_Einstein_Head_cleaned.jpg"},
+{q:"私は失敗していない。うまくいかない方法を1万通り見つけただけだ。",en:"I have not failed. I've just found 10,000 ways that won't work.",a:"トーマス・エジソン",e:"Thomas Edison",c:"失敗",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Thomas_Edison2.jpg/960px-Thomas_Edison2.jpg"},
+{q:"天才とは、1%のひらめきと99%の努力である。",en:"Genius is one percent inspiration and ninety-nine percent perspiration.",a:"トーマス・エジソン",e:"Thomas Edison",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Thomas_Edison2.jpg/960px-Thomas_Edison2.jpg"},
+{q:"成功は終わりではなく、失敗は致命的ではない。大切なのは続ける勇気だ。",en:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"ウィンストン・チャーチル",e:"Winston Churchill",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg/960px-Sir_Winston_Churchill_-_19086236948_%28restored%29.jpg"},
+{q:"何者であれ、良い者であれ。",en:"Whatever you are, be a good one.",a:"エイブラハム・リンカーン",e:"Abraham Lincoln",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Abraham_Lincoln_O-77_matte_collodion_print.jpg/960px-Abraham_Lincoln_O-77_matte_collodion_print.jpg"},
+{q:"あなたが見たいと思う変化に、あなた自身がなりなさい。",en:"Be the change that you wish to see in the world.",a:"マハトマ・ガンジー",e:"Mahatma Gandhi",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Mahatma-Gandhi%2C_studio%2C_1931.jpg/960px-Mahatma-Gandhi%2C_studio%2C_1931.jpg"},
+{q:"何事も、成し遂げるまでは不可能に思える。",en:"It always seems impossible until it's done.",a:"ネルソン・マンデラ",e:"Nelson Mandela",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Nelson_Mandela_1994.jpg/960px-Nelson_Mandela_1994.jpg"},
+{q:"私たち皆が大きなことをできるわけではない。しかし、小さなことを大きな愛をもってできる。",en:"Not all of us can do great things. But we can do small things with great love.",a:"マザー・テレサ",e:"Mother Teresa",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Mother_Teresa_1.jpg/960px-Mother_Teresa_1.jpg"},
+{q:"人生は大胆な冒険か、さもなくば何もない。",en:"Life is either a daring adventure or nothing at all.",a:"ヘレン・ケラー",e:"Helen Keller",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Helen_Keller_%28circa_1904%29.jpg/960px-Helen_Keller_%28circa_1904%29.jpg"},
+{q:"一人では少ししかできないが、共にすれば多くができる。",en:"Alone we can do so little; together we can do so much.",a:"ヘレン・ケラー",e:"Helen Keller",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Helen_Keller_%28circa_1904%29.jpg/960px-Helen_Keller_%28circa_1904%29.jpg"},
+{q:"夢はすべて叶う。追いかける勇気があれば。",en:"All our dreams can come true, if we have the courage to pursue them.",a:"ウォルト・ディズニー",e:"Walt Disney",c:"夢",img:"https://upload.wikimedia.org/wikipedia/commons/5/50/Walt_Disney_1946_%28cropped2%29.JPG"},
+{q:"始める方法は、話すのをやめて行動することだ。",en:"The way to get started is to quit talking and begin doing.",a:"ウォルト・ディズニー",e:"Walt Disney",c:"努力",img:"https://upload.wikimedia.org/wikipedia/commons/5/50/Walt_Disney_1946_%28cropped2%29.JPG"},
+{q:"できると思うか、できないと思うか。どちらも正しい。",en:"Whether you think you can or you think you can't – you're right.",a:"ヘンリー・フォード",e:"Henry Ford",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Henry_ford_1919.jpg/960px-Henry_ford_1919.jpg"},
+{q:"失敗は、もっと賢くやり直す機会にすぎない。",en:"Failure is simply the opportunity to begin again, this time more intelligently.",a:"ヘンリー・フォード",e:"Henry Ford",c:"失敗",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Henry_ford_1919.jpg/960px-Henry_ford_1919.jpg"},
+{q:"どれだけゆっくり進んでも、止まらなければ問題ない。",en:"It does not matter how slowly you go as long as you do not stop.",a:"孔子",e:"Confucius",c:"努力",img:"https://upload.wikimedia.org/wikipedia/commons/7/7e/Confucius%2C_fresco_from_a_Western_Han_tomb_of_Dongping_County%2C_Shandong_province%2C_China_%28cropped%29.jpg"},
+{q:"好きな仕事を選べば、一生働かずに済む。",en:"Choose a job you love, and you will never have to work a day in your life.",a:"孔子",e:"Confucius",c:"夢",img:"https://upload.wikimedia.org/wikipedia/commons/7/7e/Confucius%2C_fresco_from_a_Western_Han_tomb_of_Dongping_County%2C_Shandong_province%2C_China_%28cropped%29.jpg"},
+{q:"唯一の真の知恵は、自分が何も知らないと知ることだ。",en:"The only true wisdom is in knowing you know nothing.",a:"ソクラテス",e:"Socrates",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Socrates_Louvre.jpg/960px-Socrates_Louvre.jpg"},
+{q:"私たちは繰り返すことの集積だ。卓越とは行為ではなく習慣だ。",en:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"アリストテレス",e:"Aristotle",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/960px-Aristotle_Altemps_Inv8575.jpg"},
+{q:"シンプルさこそ究極の洗練だ。",en:"Simplicity is the ultimate sophistication.",a:"レオナルド・ダ・ヴィンチ",e:"Leonardo da Vinci",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Francesco_Melzi_-_Portrait_of_Leonardo_%28colour_correction%29.png/960px-Francesco_Melzi_-_Portrait_of_Leonardo_%28colour_correction%29.png"},
+{q:"学ぶことは心を疲れさせない。",en:"Learning never exhausts the mind.",a:"レオナルド・ダ・ヴィンチ",e:"Leonardo da Vinci",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Francesco_Melzi_-_Portrait_of_Leonardo_%28colour_correction%29.png/960px-Francesco_Melzi_-_Portrait_of_Leonardo_%28colour_correction%29.png"},
+{q:"私が遠くを見られたのは、巨人の肩に立っていたからだ。",en:"If I have seen further it is by standing on the shoulders of Giants.",a:"アイザック・ニュートン",e:"Isaac Newton",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Portrait_of_Sir_Isaac_Newton%2C_1689_%28brightened%29.jpg/960px-Portrait_of_Sir_Isaac_Newton%2C_1689_%28brightened%29.jpg"},
+{q:"人生で恐れるものは何もない。理解すべきものがあるだけだ。",en:"Nothing in life is to be feared, it is only to be understood.",a:"マリー・キュリー",e:"Marie Curie",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Marie_Curie_c._1920s.jpg/960px-Marie_Curie_c._1920s.jpg"},
+{q:"生き残るのは最も強い者でも賢い者でもなく、変化に最も適応できる者だ。",en:"It is not the strongest of the species that survives, nor the most intelligent, but the one most responsive to change.",a:"チャールズ・ダーウィン",e:"Charles Darwin",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Charles_Darwin_seated_crop.jpg/960px-Charles_Darwin_seated_crop.jpg"},
+{q:"物事に良いも悪いもない。考え方がそうさせるだけだ。",en:"There is nothing either good or bad, but thinking makes it so.",a:"ウィリアム・シェイクスピア",e:"William Shakespeare",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/William_Shakespeare_by_John_Taylor%2C_edited.jpg/960px-William_Shakespeare_by_John_Taylor%2C_edited.jpg"},
+{q:"できること、夢見ることは何でも始めよ。大胆さには天才と力と魔法がある。",en:"Whatever you can do or dream you can, begin it. Boldness has genius, power and magic in it.",a:"ヨハン・ヴォルフガング・フォン・ゲーテ",e:"Johann Wolfgang von Goethe",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Goethe_%28Stieler_1828%29.jpg/960px-Goethe_%28Stieler_1828%29.jpg"},
+{q:"なぜ生きるかを知る者は、ほとんどいかなる「いかに」にも耐えられる。",en:"He who has a why to live can bear almost any how.",a:"フリードリヒ・ニーチェ",e:"Friedrich Nietzsche",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/960px-Nietzsche187a.jpg"},
+{q:"私たちを殺さないものは、私たちを強くする。",en:"That which does not kill us makes us stronger.",a:"フリードリヒ・ニーチェ",e:"Friedrich Nietzsche",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/960px-Nietzsche187a.jpg"},
+{q:"難しいから挑まないのではない。挑まないから難しいのだ。",en:"It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",a:"セネカ",e:"Seneca the Younger",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Duble_herma_of_Socrates_and_Seneca_Antikensammlung_Berlin_07.jpg/960px-Duble_herma_of_Socrates_and_Seneca_Antikensammlung_Berlin_07.jpg"},
+{q:"運とは、準備が機会に出会ったときに起きることだ。",en:"Luck is what happens when preparation meets opportunity.",a:"セネカ",e:"Seneca the Younger",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Duble_herma_of_Socrates_and_Seneca_Antikensammlung_Berlin_07.jpg/960px-Duble_herma_of_Socrates_and_Seneca_Antikensammlung_Berlin_07.jpg"},
+{q:"心をコントロールできるのは自分だ。外の出来事ではない。それを知れば力が湧く。",en:"You have power over your mind – not outside events. Realize this, and you will find strength.",a:"マルクス・アウレリウス",e:"Marcus Aurelius",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/MSR-ra-61-b-1-DM.jpg/960px-MSR-ra-61-b-1-DM.jpg"},
+{q:"起きたことではなく、どう反応するかが大切だ。",en:"It's not what happens to you, but how you react to it that matters.",a:"エピクテトス",e:"Epictetus",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Epicteti_Enchiridion_Latinis_versibus_adumbratum_%28Oxford_1715%29_frontispiece_%28cropped%29.jpg/960px-Epicteti_Enchiridion_Latinis_versibus_adumbratum_%28Oxford_1715%29_frontispiece_%28cropped%29.jpg"},
+{q:"始まりは仕事の中で最も大切な部分だ。",en:"The beginning is the most important part of the work.",a:"プラトン",e:"Plato",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Plato_Silanion_Musei_Capitolini_MC1377.png/960px-Plato_Silanion_Musei_Capitolini_MC1377.png"},
+{q:"知識への投資は、最も良い利息を生む。",en:"An investment in knowledge pays the best interest.",a:"ベンジャミン・フランクリン",e:"Benjamin Franklin",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Joseph_Siffrein_Duplessis_-_Benjamin_Franklin_-_Google_Art_Project.jpg/960px-Joseph_Siffrein_Duplessis_-_Benjamin_Franklin_-_Google_Art_Project.jpg"},
+{q:"読む価値のあるものを書くか、書く価値のあることをするか。",en:"Either write something worth reading or do something worth writing.",a:"ベンジャミン・フランクリン",e:"Benjamin Franklin",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Joseph_Siffrein_Duplessis_-_Benjamin_Franklin_-_Google_Art_Project.jpg/960px-Joseph_Siffrein_Duplessis_-_Benjamin_Franklin_-_Google_Art_Project.jpg"},
+{q:"先に進む秘訣は、始めることだ。",en:"The secret of getting ahead is getting started.",a:"マーク・トウェイン",e:"Mark Twain",c:"努力",img:"https://upload.wikimedia.org/wikipedia/commons/7/7a/Mark_Twain_by_AF_Bradley_%28cropped_2%29.jpg"},
+{q:"20年後、やったことより、やらなかったことに後悔する。",en:"Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do.",a:"マーク・トウェイン",e:"Mark Twain",c:"夢",img:"https://upload.wikimedia.org/wikipedia/commons/7/7a/Mark_Twain_by_AF_Bradley_%28cropped_2%29.jpg"},
+{q:"自分らしくあれ。他の誰かはすでにいる。",en:"Be yourself; everyone else is already taken.",a:"オスカー・ワイルド",e:"Oscar Wilde",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Oscar_Wilde_by_Napoleon_Sarony._Three-quarter-length_photograph%2C_seated_%28cropped%29.jpg/960px-Oscar_Wilde_by_Napoleon_Sarony._Three-quarter-length_photograph%2C_seated_%28cropped%29.jpg"},
+{q:"最も勇気ある行為は、自分で考えること。声に出して。",en:"The most courageous act is still to think for yourself. Aloud.",a:"ココ・シャネル",e:"Coco Chanel",c:"勇気",img:"https://upload.wikimedia.org/wikipedia/commons/2/22/Coco_Chanel_in_Los_Angeles%2C_1931_%28cropped%29.jpg"},
+{q:"不可能はない。その言葉自体が「私は可能」と言っている。",en:"Nothing is impossible, the word itself says 'I'm possible'!",a:"オードリー・ヘプバーン",e:"Audrey Hepburn",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/AudreyKHepburn.jpg/960px-AudreyKHepburn.jpg"},
+{q:"トレーニングの毎分が嫌だった。でも「やめるな。今苦しめば、残りの人生を王者として生きられる」と言い聞かせた。",en:"I hated every minute of training, but I said, 'Don't quit. Suffer now and live the rest of your life as a champion.'",a:"モハメド・アリ",e:"Muhammad Ali",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Muhammad_Ali_NYWTS.jpg/960px-Muhammad_Ali_NYWTS.jpg"},
+{q:"私は9000本以上のシュートを外し、300試合近く負け、決勝シュートを26回外した。何度も失敗した。だからこそ成功した。",en:"I've missed more than 9000 shots in my career. I've lost almost 300 games. 26 times, I've been trusted to take the game winning shot and missed. I've failed over and over and over again in my life. And that is why I succeed.",a:"マイケル・ジョーダン",e:"Michael Jordan",c:"失敗",img:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Michael_Jordan_in_2014.jpg"},
+{q:"失敗は受け入れられる。誰でも失敗する。でも、挑戦しないことは受け入れられない。",en:"I can accept failure, everyone fails at something. But I can't accept not trying.",a:"マイケル・ジョーダン",e:"Michael Jordan",c:"挑戦",img:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Michael_Jordan_in_2014.jpg"},
+{q:"1万種類の蹴りを1回ずつ練習した男は恐れない。1つの蹴りを1万回練習した男を恐れる。",en:"I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",a:"ブルース・リー",e:"Bruce Lee",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Bruce_Lee_as_Chen_Zhen_%284x5_cropped%29.jpg/960px-Bruce_Lee_as_Chen_Zhen_%284x5_cropped%29.jpg"},
+{q:"水になれ、友よ。",en:"Be water, my friend.",a:"ブルース・リー",e:"Bruce Lee",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Bruce_Lee_as_Chen_Zhen_%284x5_cropped%29.jpg/960px-Bruce_Lee_as_Chen_Zhen_%284x5_cropped%29.jpg"},
+{q:"最も不満な顧客こそ、最大の学びの源だ。",en:"Your most unhappy customers are your greatest source of learning.",a:"ビル・ゲイツ",e:"Bill Gates",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg/960px-Bill_Gates_at_the_European_Commission_-_P067383-987995_%28cropped%29_5.jpg"},
+{q:"最高の投資は、自分への投資だ。",en:"The best investment you can make is in yourself.",a:"ウォーレン・バフェット",e:"Warren Buffett",c:"努力",img:"https://upload.wikimedia.org/wikipedia/commons/d/d4/Warren_Buffett_at_the_2015_SelectUSA_Investment_Summit_%28cropped%29.jpg"},
+{q:"最大の冒険は、夢の人生を生きることだ。",en:"The biggest adventure you can take is to live the life of your dreams.",a:"オプラ・ウィンフリー",e:"Oprah Winfrey",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Oprah_Winfrey_2016.jpg/960px-Oprah_Winfrey_2016.jpg"},
+{q:"何かで失敗せずに生きることはできない。失敗を避けて生きるなら、生きていないのと同じだ。",en:"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all.",a:"J.K.ローリング",e:"J. K. Rowling",c:"失敗",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/J._K._Rowling_2010.jpg/960px-J._K._Rowling_2010.jpg"},
+{q:"人生がいかに困難に見えても、必ずできること、成功できることがある。",en:"However difficult life may seem, there is always something you can do and succeed at.",a:"スティーヴン・ホーキング",e:"Stephen Hawking",c:"勇気",img:"https://upload.wikimedia.org/wikipedia/commons/e/eb/Stephen_Hawking.StarChild.jpg"},
+{q:"一人の子ども、一人の教師、一冊の本、一本のペンが世界を変えられる。",en:"One child, one teacher, one book, one pen can change the world.",a:"マララ・ユスフザイ",e:"Malala Yousafzai",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Malala_Yousafzai_2023_portrait_2x3.jpg/960px-Malala_Yousafzai_2023_portrait_2x3.jpg"},
+{q:"世界を良くし始めるのに、誰も一瞬たりとも待つ必要がないなんて、なんと素晴らしいことだろう。",en:"How wonderful it is that nobody need wait a single moment before starting to improve the world.",a:"アンネ・フランク",e:"Anne Frank",c:"挑戦",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Anne_Frank_passport_photo%2C_May_1942_%28cropped%29.jpg/960px-Anne_Frank_passport_photo%2C_May_1942_%28cropped%29.jpg"},
+{q:"最も暗い夜も終わり、太陽は昇る。",en:"Even the darkest night will end and the sun will rise.",a:"ヴィクトル・ユゴー",e:"Victor Hugo",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Victor_Hugo_by_%C3%89tienne_Carjat_1876_-_full.jpg/960px-Victor_Hugo_by_%C3%89tienne_Carjat_1876_-_full.jpg"},
+{q:"計画のない目標は、ただの願いだ。",en:"A goal without a plan is just a wish.",a:"アントワーヌ・ド・サン＝テグジュペリ",e:"Antoine de Saint-Exupéry",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Antoine_de_Saint-Euxpery_%281920%29.jpg/960px-Antoine_de_Saint-Euxpery_%281920%29.jpg"},
+{q:"完璧とは、付け加えるものがなくなったときではなく、取り除くものがなくなったときに達成される。",en:"Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.",a:"アントワーヌ・ド・サン＝テグジュペリ",e:"Antoine de Saint-Exupéry",c:"学び",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Antoine_de_Saint-Euxpery_%281920%29.jpg/960px-Antoine_de_Saint-Euxpery_%281920%29.jpg"},
+{q:"すべての子どもは芸術家だ。問題は、大人になっても芸術家でいられるかどうかだ。",en:"Every child is an artist. The problem is how to remain an artist once we grow up.",a:"パブロ・ピカソ",e:"Pablo Picasso",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Pablo_picasso_1.jpg/960px-Pablo_picasso_1.jpg"},
+{q:"行動は、すべての成功の基礎となる鍵だ。",en:"Action is the foundational key to all success.",a:"パブロ・ピカソ",e:"Pablo Picasso",c:"努力",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Pablo_picasso_1.jpg/960px-Pablo_picasso_1.jpg"},
+{q:"気に入らないことがあれば変えなさい。変えられないなら、自分の態度を変えなさい。",en:"If you don't like something, change it. If you can't change it, change your attitude.",a:"マヤ・アンジェロウ",e:"Maya Angelou",c:"勇気",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Angelou_at_Clinton_inauguration_%28cropped_2%29.jpg/960px-Angelou_at_Clinton_inauguration_%28cropped_2%29.jpg"},
+{q:"私たちの人生の目的は、幸せになることだ。",en:"The purpose of our lives is to be happy.",a:"ダライ・ラマ",e:"14th Dalai Lama",c:"夢",img:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Tenzin_Gyatso_-_Trento_2013_01.JPG/960px-Tenzin_Gyatso_-_Trento_2013_01.JPG"}
 ];
 let currentDate=new Date();
 let filter="すべて";
@@ -137,11 +147,15 @@ function show(d){
   const idx=dayIndex(d);
   const item=QUOTES[idx];
   const wd=["日","月","火","水","木","金","土"][d.getDay()];
-  document.getElementById("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日（"+wd+"）・ "+(idx+1)+" / "+QUOTES.length+"件目";
-  document.getElementById("tag").textContent=item.c;
+  document.getElementById("date").textContent=d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+"（"+wd+"）";
+  document.getElementById("tag").textContent=item.c+" ・ "+(idx+1)+" / "+QUOTES.length;
   document.getElementById("quote").textContent="「"+item.q+"」";
   document.getElementById("en").textContent=item.en;
-  document.getElementById("author").innerHTML=item.a+"<small>"+item.c+"</small>";
+  document.getElementById("author").innerHTML=item.a+"<small>"+item.e+"</small>";
+  const photo=document.getElementById("photo");
+  photo.src=item.img; photo.alt=item.a+"の肖像写真";
+  photo.onerror=function(){photo.style.display="none"};
+  photo.onload=function(){photo.style.display="block"};
   document.getElementById("count").textContent="全"+QUOTES.length+"件 ・ お気に入り "+favs().length+"件";
   const f=favs().includes(idx);
   const b=document.getElementById("fav");
@@ -150,8 +164,6 @@ function show(d){
   renderList();
 }
 function renderList(){
-  const cats=["すべて","お気に入り","挑戦","努力","失敗","時間","夢","勇気","学び","成功"];
-  // 時間・成功は現在0件のため表示から外す場合は下で調整
   const chips=document.getElementById("chips");chips.innerHTML="";
   ["すべて","お気に入り","挑戦","努力","失敗","夢","勇気","学び"].forEach(function(c){
     const el=document.createElement("button");el.className="chip"+(filter===c?" on":"");el.textContent=c;
@@ -162,8 +174,11 @@ function renderList(){
     if(filter==="お気に入り"&&!favs().includes(i))return;
     if(filter!=="すべて"&&filter!=="お気に入り"&&item.c!==filter)return;
     const div=document.createElement("div");div.className="item";
-    div.innerHTML="<b>「"+item.q+"」</b><p>"+item.a+" ・ "+item.c+(favs().includes(i)?" ・ ★":"")+"</p>";
-    div.onclick=function(){const d=new Date();const base=new Date(d.getFullYear(),0,1);base.setDate(base.getDate()+i);show(base)};
+    const im=document.createElement("img");im.src=item.img;im.alt=item.a;im.loading="lazy";im.onerror=function(){im.style.display="none"};
+    const tx=document.createElement("div");
+    tx.innerHTML="<b>「"+item.q+"」</b><p>"+item.a+" ・ "+item.c+(favs().includes(i)?" ・ ★":"")+"</p>";
+    div.appendChild(im);div.appendChild(tx);
+    div.onclick=function(){const d=new Date();const base=new Date(d.getFullYear(),0,1);base.setDate(base.getDate()+i);document.getElementById("panel").classList.add("hidden");window.scrollTo(0,0);show(base)};
     list.appendChild(div);
   });
 }
@@ -173,6 +188,7 @@ document.getElementById("today").onclick=function(){show(new Date())};
 document.getElementById("random").onclick=function(){const d=new Date();d.setDate(d.getDate()+Math.floor(Math.random()*QUOTES.length));show(d)};
 document.getElementById("fav").onclick=function(){const idx=dayIndex(currentDate);let f=favs();if(f.includes(idx)){f=f.filter(function(x){return x!==idx})}else{f.push(idx)}localStorage.setItem("verba.favs",JSON.stringify(f));show(currentDate)};
 document.getElementById("copy").onclick=function(){const idx=dayIndex(currentDate);const item=QUOTES[idx];const t="「"+item.q+"」 — "+item.a;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert("コピーしました")})}else{alert(t)}};
+document.getElementById("toggleList").onclick=function(){const p=document.getElementById("panel");p.classList.toggle("hidden");if(!p.classList.contains("hidden")){p.scrollIntoView({behavior:"smooth"})}};
 show(new Date());
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
 </script>
