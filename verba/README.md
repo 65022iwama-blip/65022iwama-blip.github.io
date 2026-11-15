@@ -1,4 +1,4 @@
-# VERBA — 今日の名言
+# MAXIMA — 今日の名言
 
 毎日1枚、偉人の名言ポスターが出るだけのPWAです。選ぶものはありません。
 
@@ -11,5 +11,5 @@
 ## ファイル
 - index.html（本体・名言60件＋肖像写真URL内蔵）
 - manifest.json
-- sw.js（verba-v3、ページは更新優先で取得）
+- sw.js（verba-v4、ページは更新優先で取得）
 - icon-192.png / icon-512.png
